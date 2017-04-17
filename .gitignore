@@ -19,7 +19,6 @@
 *.so
 *.so.*
 *.dylib
-
 # Executables
 *.exe
 *.out
@@ -34,3 +33,9 @@
 
 # Misc.
 *.txt
+/program
+
+#OS
+*/.DS_Store
+.DS_Store
+.DS_Store?
