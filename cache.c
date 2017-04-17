@@ -34,6 +34,7 @@ long long getTag(long long a, int t, int s, int b){
 
 void freeMem(void){
 	free(cache);
+    exit(0);
 }
 
 void setUp(void){
