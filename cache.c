@@ -2,61 +2,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-/**
-00000000 1010 1 001
-11111010
-00001010 <-- gets the tag
-
-
-S = sets
-B
-E = lines per set
-m = 64
-s = log2(S)
-b = log2(B)
-t = 32 - s + b
-
-int getSetIndex(long long a, int m, int S, int B){
-    (a >> b) & (S - 1);
-}
-
-long long getTag(long long a, int m, int s, int b){
-    return (a >> (s + b)) & ((1 << t) - 1);
-}
-
-Fully associative caches have 1 Set
-
-& is a mask
-a & 0x7 <-- byte offset of a 8 bit number
-
-
-a & ((1 << b) - 1)
-
-
-
-typedef struct line {
-    char valid;
-    long long tag;
-
-    int LFUCounter;
-    int LRUCounter;
-
-} line;
-
-line **cache;
-cache = (line**)calloc(sizeof(line)*E*S)
-line[i][j]
-
-long long address;
-
-look {
-    read address
-    if cache[getSetIndex(address, m, s, B)]
-}
-
-
-
-**/
+//Prototypes
+void freeMem(void); //to free memory
+void userInput(int S, int E, int B, int m); //for user input
+void setUp(void); //set up the cache
 
 //struct for the Line
 typedef struct Line{
@@ -81,6 +30,8 @@ long long getTag(long long a, int t, int s, int b){
     return (a >> (s + b)) & ((1 << t) - 1);
 }
 
+
+
 void freeMem(void){
 	free(cache);
 }
@@ -88,7 +39,6 @@ void freeMem(void){
 void setUp(void){
     int S, E, B, m, h, mp;
     char policy[3];
-    long long input;
 
     scanf("%d %d %d %d %s %d %d", &S, &E, &B, &m, policy, &h, &m);
 
@@ -104,33 +54,52 @@ void setUp(void){
         }
     }
 
+    userInput(S, E, B, m);
+}
+
+void userInput(int S, int E, int B, int m){
+    int s = (int)log2f((float)S);
+    int b = (int)log2f((float)B);
+    int t = m - (s + b);
+
+    long long input;
 
     while(input != -1){
         scanf("%10llx", &input);
+
+        if(input == -1){
+            freeMem();
+        }
+
         int check = 0;
         int setIndex = getSetIndex(input, S, b);
         long long setTag = getTag(input, t, s, b);
+
         Line *cLine = cache[setIndex];
 
-        if(input == -1){
-        	exit(0);
-        }
-
         if(E == 1){ //direct mapped cache
-        	if((cLine->valid == '0' && cLine->tag != setTag) || (cLine->valid == '1' && cLine->tag != setTag)){
-        		printf("%10llx M <--- X\n", input);
-        		cLine->valid = '1';
-        		cLine->tag = setTag;
-        	} else {
-        		printf("%10llx H\n", input);
-        	}
-        } else if(B == 1){
-
-        } else if(S == 1){
-
+            if((cLine->valid == '0') || (cLine->valid == '1' && cLine->tag != setTag)){
+                printf("%10llx M <--- X\n", input);
+                cLine->valid = '1';
+                cLine->tag = setTag;
+            } else {
+                printf("%10llx H\n", input);
+            }
+        } else { //set associative and fully associative
+            for(int i = 0; i < E; i++){
+                if(cLine[i].valid == '0'){
+                    printf("%10llx M ASS\n", input);
+                    cLine[i].valid = '1';
+                    cLine[i].tag = setTag;
+                    break;
+                } else if(cLine[i].tag != setTag) {
+                    printf("%10llx HM ASS\n", input);
+                } else {
+                    printf("%10llx H ASS\n", input);
+                    break;
+                }
+            }
         }
-
-        
 
     }
 }
