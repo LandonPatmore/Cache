@@ -81,6 +81,10 @@ long long getTag(long long a, int t, int s, int b){
     return (a >> (s + b)) & ((1 << t) - 1);
 }
 
+void freeMem(void){
+	free(cache);
+}
+
 void setUp(void){
     int S, E, B, m, h, mp;
     char policy[3];
@@ -104,10 +108,25 @@ void setUp(void){
     while(input != -1){
         scanf("%10llx", &input);
         int check = 0;
-        int setIndex = getSetIndex(input, s, b);
-        printf("%d\n", setIndex);
+        int setIndex = getSetIndex(input, S, b);
+        long long setTag = getTag(input, t, s, b);
+        Line *cLine = cache[setIndex];
 
-        if(E == 1){
+        if(input == -1){
+        	exit(0);
+        }
+
+        if(E == 1){ //direct mapped cache
+        	if((cLine->valid == '0' && cLine->tag != setTag) || (cLine->valid == '1' && cLine->tag != setTag)){
+        		printf("%10llx M <--- X\n", input);
+        		cLine->valid = '1';
+        		cLine->tag = setTag;
+        	} else {
+        		printf("%10llx H\n", input);
+        	}
+        } else if(B == 1){
+
+        } else if(S == 1){
 
         }
 
