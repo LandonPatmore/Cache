@@ -89,7 +89,7 @@ void userInput(int S, int E, int B, int m, char policy[]){
 
         if(E == 1){ // direct mapped cache
             if((cLine->valid == '0') || (cLine->valid == '1' && cLine->tag != setTag)){
-                printf("%llx M <--- X\n", input);
+                printf("%llx M <--- X SET INDEX: %d SET TAG: %llx\n", input, setIndex, setTag);
                 cLine->valid = '1';
                 cLine->tag = setTag;
                 misser();
@@ -109,6 +109,8 @@ void userInput(int S, int E, int B, int m, char policy[]){
                     printf("%llx M <---\n", input);
                     cLine[i].valid = '1';
                     cLine[i].tag = setTag;
+                    cLine[i].LRUCounter = 0;
+                    cLine[i].LFUCounter = 0;
                     misser();
                     break;
                 } else if(cLine[i].tag != setTag){
@@ -120,12 +122,12 @@ void userInput(int S, int E, int B, int m, char policy[]){
                     break;
                 }
                 if(fulLCheck == E){
-                    printf("%s\n", "FULL EVICT");
+                    misser();
                     if(checker(policy)){
-                        printf("%s\n", "LRU");
+                        printf("%llx <---- LRU\n", input);
                         LRU(cLine, E, setTag);
                     } else {
-                        printf("%s\n", "LFU");
+                        printf("%llx <---- LFU\n", input);
                         LFU(cLine, E, setTag);
                     }
                 }

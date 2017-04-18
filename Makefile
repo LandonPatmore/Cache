@@ -8,7 +8,7 @@ LIBS  =
 INCS  =
 
 $(EXEC)   :   $(OBJS)
-	$(CC) $(LFLAGS) -o $(EXEC) $(OBJS) $(LIBS)
+	$(CC) $(LFLAGS) -o $(EXEC) $(OBJS) $(LIBS) -lm
 
 .c.o:
 	$(CC) $(CFLAGS) -c $(INCS) $*.c
