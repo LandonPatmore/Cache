@@ -113,8 +113,6 @@ void userInput(int S, int E, int B, int m, char policy[]){
                     break;
                 } else if(cLine[i].tag != setTag){
                     fulLCheck++;
-                    misser();
-                    printf("%llx NOT RIGHT TAG\n", input);
                 }else {
                     printf("%llx H\n", input);
                     incrementer(&cLine[i], policy);
