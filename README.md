@@ -1,2 +1,8 @@
-# 322HW3
-CSC 322 Homework 3
+# Cache
+
+## Description
+* Simulation of a cache system.
+
+## Language
+* C
+
